@@ -3,38 +3,58 @@ import { motion } from "framer-motion";
 import { Search, Bookmark, MapPin, Tag } from "lucide-react";
 import { getJobs, searchJobs } from "./api";
 
+interface Job {
+	title: string;
+	company: string;
+	location: string;
+	skills: string;
+	apply_link: string;
+}
+
 export default function App() {
-	const [jobs, setJobs] = useState([]);
+	const [jobs, setJobs] = useState<Job[]>([]);
 	const [query, setQuery] = useState("");
-	const [saved, setSaved] = useState([]);
+	const [saved, setSaved] = useState<Job[]>([]);
 	const [viewSaved, setViewSaved] = useState(false);
 	const [loading, setLoading] = useState(false);
 
 	const loadJobs = async () => {
 		setLoading(true);
+
 		const data = await getJobs();
+
 		setJobs(data);
 		setLoading(false);
 	};
 
 	useEffect(() => {
 		loadJobs();
+
+		const stored = localStorage.getItem("savedJobs");
+
+		if (stored) {
+			setSaved(JSON.parse(stored));
+		}
 	}, []);
 
 	const handleSearch = async () => {
 		setLoading(true);
+
 		const data = query ? await searchJobs(query) : await getJobs();
+
 		setJobs(data);
 		setLoading(false);
 	};
 
-	const toggleSave = (job) => {
+	const toggleSave = (job: Job) => {
 		const exists = saved.find((j) => j.apply_link === job.apply_link);
+
 		const updated = exists
 			? saved.filter((j) => j.apply_link !== job.apply_link)
 			: [...saved, job];
 
 		setSaved(updated);
+
 		localStorage.setItem("savedJobs", JSON.stringify(updated));
 	};
 
@@ -49,6 +69,7 @@ export default function App() {
 				{/* SEARCH */}
 				<div className="relative mb-4">
 					<Search className="absolute left-3 top-3 text-gray-400 w-4" />
+
 					<input
 						value={query}
 						onChange={(e) => setQuery(e.target.value)}
@@ -74,7 +95,8 @@ export default function App() {
 					<button
 						onClick={() => setViewSaved(true)}
 						className="w-full text-left px-3 py-2 rounded-lg hover:bg-gray-100 flex items-center gap-2">
-						<Bookmark size={16} /> Saved Jobs
+						<Bookmark size={16} />
+						Saved Jobs
 					</button>
 				</div>
 			</div>
@@ -84,6 +106,7 @@ export default function App() {
 				{/* HEADER */}
 				<div className="mb-6">
 					<h2 className="text-3xl font-bold tracking-tight">Discover Jobs</h2>
+
 					<p className="text-gray-500">
 						Smart curated opportunities for engineers & analysts
 					</p>
@@ -94,13 +117,23 @@ export default function App() {
 					<p className="text-gray-500">Loading jobs...</p>
 				) : (
 					<div className="grid md:grid-cols-2 xl:grid-cols-3 gap-5">
-						{displayJobs.map((job, i) => (
+						{displayJobs.map((job: Job, i: number) => (
 							<motion.div
 								key={i}
-								initial={{ opacity: 0, y: 10 }}
-								animate={{ opacity: 1, y: 0 }}
-								whileHover={{ scale: 1.02 }}
-								transition={{ duration: 0.2 }}
+								initial={{
+									opacity: 0,
+									y: 10,
+								}}
+								animate={{
+									opacity: 1,
+									y: 0,
+								}}
+								whileHover={{
+									scale: 1.02,
+								}}
+								transition={{
+									duration: 0.2,
+								}}
 								className="bg-white rounded-2xl p-5 shadow-sm border hover:shadow-xl transition relative overflow-hidden">
 								{/* BADGE */}
 								<div className="absolute top-3 right-3 text-xs px-2 py-1 bg-blue-50 text-blue-600 rounded-full">
@@ -123,7 +156,7 @@ export default function App() {
 									{job.skills
 										?.split(",")
 										.slice(0, 3)
-										.map((s, idx) => (
+										.map((s: string, idx: number) => (
 											<span
 												key={idx}
 												className="text-xs bg-gray-100 px-2 py-1 rounded-full flex items-center gap-1">
@@ -144,6 +177,7 @@ export default function App() {
 									<a
 										href={job.apply_link}
 										target="_blank"
+										rel="noreferrer"
 										className="text-blue-600 font-medium hover:underline">
 										Apply →
 									</a>
