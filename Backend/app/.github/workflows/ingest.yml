@@ -10,6 +10,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Call FastAPI ingest endpoint
+      - name: Trigger FastAPI ingestion
         run: |
-          curl -X POST https://YOUR-BACKEND-URL.onrender.com/ingest
+          curl -X POST https://jobs-parser.onrender.com/ingest
