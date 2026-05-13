@@ -1,11 +1,12 @@
-const BASE_URL = "http://127.0.0.1:8000";
+const API_URL = import.meta.env.VITE_API_URL;
 
-export const getJobs = async () => {
-	const res = await fetch(`${BASE_URL}/jobs`);
-	return res.json();
-};
+export async function getJobs() {
+	const response = await fetch(`${API_URL}/jobs`);
+	return response.json();
+}
 
-export const searchJobs = async (q) => {
-	const res = await fetch(`${BASE_URL}/jobs/search?q=${q}`);
-	return res.json();
-};
+export async function searchJobs(query: string) {
+	const response = await fetch(`${API_URL}/search?q=${query}`);
+
+	return response.json();
+}
