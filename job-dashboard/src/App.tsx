@@ -20,9 +20,7 @@ export default function App() {
 
 	const loadJobs = async () => {
 		setLoading(true);
-
 		const data = await getJobs();
-
 		setJobs(data);
 		setLoading(false);
 	};
@@ -31,17 +29,12 @@ export default function App() {
 		loadJobs();
 
 		const stored = localStorage.getItem("savedJobs");
-
-		if (stored) {
-			setSaved(JSON.parse(stored));
-		}
+		if (stored) setSaved(JSON.parse(stored));
 	}, []);
 
 	const handleSearch = async () => {
 		setLoading(true);
-
 		const data = query ? await searchJobs(query) : await getJobs();
-
 		setJobs(data);
 		setLoading(false);
 	};
@@ -54,16 +47,15 @@ export default function App() {
 			: [...saved, job];
 
 		setSaved(updated);
-
 		localStorage.setItem("savedJobs", JSON.stringify(updated));
 	};
 
 	const displayJobs = viewSaved ? saved : jobs;
 
 	return (
-		<div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex">
+		<div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex flex-col md:flex-row">
 			{/* SIDEBAR */}
-			<div className="w-72 bg-white/70 backdrop-blur-xl border-r p-5 sticky top-0 h-screen">
+			<div className="w-full md:w-72 bg-white/70 backdrop-blur-xl border-r p-5 md:sticky md:top-0 md:h-screen">
 				<h1 className="text-2xl font-bold mb-6">💼 JobFlow</h1>
 
 				{/* SEARCH */}
@@ -102,12 +94,13 @@ export default function App() {
 			</div>
 
 			{/* MAIN */}
-			<div className="flex-1 p-8">
+			<div className="flex-1 p-4 md:p-8">
 				{/* HEADER */}
 				<div className="mb-6">
-					<h2 className="text-3xl font-bold tracking-tight">Discover Jobs</h2>
-
-					<p className="text-gray-500">
+					<h2 className="text-2xl md:text-3xl font-bold tracking-tight">
+						Discover Jobs
+					</h2>
+					<p className="text-gray-500 text-sm md:text-base">
 						Smart curated opportunities for engineers & analysts
 					</p>
 				</div>
@@ -116,24 +109,14 @@ export default function App() {
 				{loading ? (
 					<p className="text-gray-500">Loading jobs...</p>
 				) : (
-					<div className="grid md:grid-cols-2 xl:grid-cols-3 gap-5">
+					<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
 						{displayJobs.map((job: Job, i: number) => (
 							<motion.div
 								key={i}
-								initial={{
-									opacity: 0,
-									y: 10,
-								}}
-								animate={{
-									opacity: 1,
-									y: 0,
-								}}
-								whileHover={{
-									scale: 1.02,
-								}}
-								transition={{
-									duration: 0.2,
-								}}
+								initial={{ opacity: 0, y: 10 }}
+								animate={{ opacity: 1, y: 0 }}
+								whileHover={{ scale: 1.02 }}
+								transition={{ duration: 0.2 }}
 								className="bg-white rounded-2xl p-5 shadow-sm border hover:shadow-xl transition relative overflow-hidden">
 								{/* BADGE */}
 								<div className="absolute top-3 right-3 text-xs px-2 py-1 bg-blue-50 text-blue-600 rounded-full">
